@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <main>
+      <users></users>
+    </main>
+
+    <template id="list-users-template">
+      <div>
+        <section class="header">
+          <slot></slot>
+          <input type="search" placeholder="Find user" v-model="find"/>
+        </section>
+        <hr />
+        <section class="users">
+          <!-- <user :userprop="userData" v-for="userData in listUsers"></user> -->
+          <user :userprop="userData" v-for="userData in filterUser"></user>
+        </section>
+      </div>
+    </template>
+
+    <template id="user-template">
+      <div class="user">
+        <img :src="userprop.image" :alt="userprop.name" />
+        <section>
+          <p>{{ userprop.name }}</p>
+          <a :href=`mailto:${userprop.email}`>{{ userprop.email }}</a>
+        </section>
+      </div>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+
+      Vue.component('users', {
+        template: '#list-users-template',
+        mounted() {
+          axios.get('https://randomuser.me/api/?results=5')
+            .then((response) => {
+              const list = response.data.results.map((userMap) => {
+                return {
+                  name: `${userMap.name.title} ${userMap.name.first} ${userMap.name.last}`,
+                  email: userMap.email,
+                  image: userMap.picture.medium,
+                }
+              });
+
+              this.listUsers = list;
+            });
+        },
+
+        data() {
+          return {
+            listUsers: [],
+            find: '',
+          }
+        },
+        computed: {
+          filterUser() {
+            return this.listUsers.filter((userToFilter) => {
+              return userToFilter.name.includes(this.find);
+            })
+          }
+        }
+      });
+
+      Vue.component('user', {
+        props: ['userprop'],
+        template: '#user-template',
+
+      });
+
+      new Vue({
+        el: 'main',
+      });
+
+    </script>
+  </body>
+</html>

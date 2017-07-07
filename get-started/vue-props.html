@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <main>
+      <user :users="usersApi"></user>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+
+      Vue.component('user', {
+        props: ['users'],
+        template: `<div>
+                    <div v-for="user, index in users" :class="'user-' + index">
+                      <p> {{ user.email }} </p>
+                      <img :src="user.picture.thumbnail" />
+                      <button @click="cambiarProp(user.email)">Cambiar Prop</button>
+                    </div>
+                  </div>`,
+        methods: {
+          cambiarProp(email) {
+            console.log(email.toUpperCase());
+            return email.toUpperCase();
+          }
+        }
+
+      });
+
+      new Vue({
+        el: 'main',
+
+        mounted() {
+          axios.get('https://randomuser.me/api/?results=5')
+            .then((response) => {
+              this.usersApi = response.data.results;
+            });
+        },
+
+        data: {
+          usersApi: [],
+        },
+
+    });
+
+    </script>
+  </body>
+</html>

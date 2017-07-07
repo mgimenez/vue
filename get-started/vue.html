@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div>
+      <input type="range" min="0" max="50" v-model="minimo" />
+      <ul>
+         <li v-for="task in menosDe">
+           {{ task.name}}
+         </li>
+      </ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+    <script>
+
+      new Vue({
+        el: 'div',
+          data: {
+            minimo: 0,
+            tasks: [
+              { name: 'task 1', time: 10 },
+              { name: 'task 2', time: 22 },
+              { name: 'task 3', time: 3 }
+            ]
+        },
+
+        computed: {
+          menosDe() {
+            return this.tasks.filter((task) => task.time >= this.minimo)
+          }
+        }
+
+    });
+
+    </script>
+  </body>
+</html>
